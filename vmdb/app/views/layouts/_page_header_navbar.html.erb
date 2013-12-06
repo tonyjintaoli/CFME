@@ -1,0 +1,263 @@
+<%
+# Copyright © 2006 - 2012 ManageIQ, Inc. All Rights Reserved
+%>
+<div class="navbar">
+  <ul id="maintab" >
+    <% if role_allows(:main_tab=>MAIN_TABS[:vi]) %>
+      <li class="nav-v-intelligence"><a id="nav-v-intelligence-a" href="/dashboard/maintab/?tab=vi" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:vi]) %></a>
+        <ul id="nav-v-intelligence" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+          <% if role_allows(:feature=>"dashboard_view") %>
+            <li><a  id="nav-dashboard" href="/dashboard/" onclick="return miqMenuChosen()">Dashboard</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"miq_report", :any=>true) %>
+            <li><a  id="nav-report" href="/report/explorer/" onclick="return miqMenuChosen()">Reports</a></li>
+          <% end %>
+
+          <%# Hiding usage for now - release 5.2 %>
+          <% if false %>
+            <% if role_allows(:feature=>"usage") %>
+              <li><a  id="nav-usage" href="/report/usage/" onclick="return miqMenuChosen()">Usage</a>	</li>
+            <% end %>
+          <% end %>
+
+          <% if role_allows(:feature=>"chargeback", :any=>true) %>
+            <li><a  id="nav-chargeback" href="/chargeback/explorer/" onclick="return miqMenuChosen()">Chargeback</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"timeline") %>
+            <li><a  id="nav-timeline" href="/dashboard/timeline/" onclick="return miqMenuChosen()">Timelines</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"rss") %>
+            <li><a  id="nav-rss" href="/alert/" onclick="return miqMenuChosen()">RSS</a></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+
+    <% if role_allows(:main_tab=>MAIN_TABS[:svc]) %>
+      <li class="nav-vms"><a  id="nav-vms-a" href="/dashboard/maintab/?tab=svc" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:svc]) %></a>
+        <ul id="nav-vms" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+          <% if role_allows(:feature=>"service") %>
+            <li><a  id="nav-services" href="/service/explorer" onclick="return miqMenuChosen()">My Services</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"catalog", :any=>true) %>
+            <li><a  id="nav-catalogs" href="/catalog/explorer" onclick="return miqMenuChosen()">Catalogs</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"vm_explorer_accords", :any=>true) %>
+            <li><a  id="nav-vm_explorer" href="/vm_or_template/explorer" onclick="return miqMenuChosen()">Workloads</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"miq_request_show_list") %>
+            <li><a  id="nav-vm-provision" href="/miq_request?typ=vm" onclick="return miqMenuChosen()">Requests</a></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+    <% if role_allows(:main_tab=>MAIN_TABS[:clo]) %>
+      <li class="nav-cloud"><a id="nav-cloud-a" href="/dashboard/maintab/?tab=clo" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:clo]) %></a>
+        <ul id="nav-cloud" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+          <% if role_allows(:feature=>"ems_cloud_show_list") %>
+            <li><a  id="nav-ems_cloud" href="/ems_cloud" onclick="return miqMenuChosen()">Providers</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"availability_zone_show_list") %>
+            <li><a  id="nav-availability_zone" href="/availability_zone" onclick="return miqMenuChosen()">Availability Zones</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"flavor_show_list") %>
+            <li><a  id="nav-flavor" href="/flavor" onclick="return miqMenuChosen()">Flavors</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"security_group_show_list") %>
+            <li><a  id="nav-security_group" href="/security_group" onclick="return miqMenuChosen()">Security Groups</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"vm_cloud_explorer_accords", :any=>true) %>
+            <li><a  id="nav-vm_cloud" href="/vm_cloud/explorer" onclick="return miqMenuChosen()">Instances</a></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+
+    <% if role_allows(:main_tab=>MAIN_TABS[:inf]) %>
+      <li class="nav-infrastructure"><a id="nav-infrastructure-a" href="/dashboard/maintab/?tab=inf" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:inf]) %></a>
+        <ul id="nav-infrastructure" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+          <% if role_allows(:feature=>"ems_infra_show_list") %>
+            <li><a  id="nav-ems_infra" href="/ems_infra" onclick="return miqMenuChosen()">Providers</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"ems_cluster_show_list") %>
+            <li><a  id="nav-clusters" href="/ems_cluster" onclick="return miqMenuChosen()">Clusters</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"host_show_list") %>
+            <li><a  id="nav-host" href="/host" onclick="return miqMenuChosen()">Hosts</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"vm_infra_explorer_accords", :any=>true) %>
+            <li><a  id="nav-vm_infra" href="/vm_infra/explorer" onclick="return miqMenuChosen()">Virtual Machines</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"resource_pool_show_list") %>
+            <li><a  id="nav-resource_pools" href="/resource_pool" onclick="return miqMenuChosen()">Resource Pools</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"storage_show_list") %>
+            <li><a  id="nav-storage" href="/storage" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"storages") %></a></li>
+          <% end %>
+          <% if role_allows(:feature=>"repository_show_list") %>
+            <li><a  id="nav-repository" href="/repository" onclick="return miqMenuChosen()">Repositories</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"pxe") %>
+            <li><a  id="nav-pxe" href="/pxe/explorer" onclick="return miqMenuChosen()">PXE</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"miq_request_show_list") %>
+            <li><a  id="nav-host-provision" href="/miq_request?typ=host" onclick="return miqMenuChosen()">Requests</a></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+
+    <% if get_vmdb_config[:product][:vdi] %>
+      <% if role_allows(:main_tab=>MAIN_TABS[:vdi]) %>
+        <li class="nav-vdi"><a id="nav-vdi-a" href="/dashboard/maintab/?tab=vdi" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:vdi]) %></a>
+          <ul id="nav-vdi" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+            <% if role_allows(:feature=>"vdi_farm_show_list") %>
+              <li><a  id="nav-vdi_farm" href="/vdi_farm" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"vdi_farm") %></a></li>
+            <% end %>
+            <% if role_allows(:feature=>"vdi_controller_show_list") %>
+              <li><a  id="nav-vdi_controller" href="/vdi_controller" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"vdi_controller") %></a></li>
+            <% end %>
+            <% if role_allows(:feature=>"vdi_desktop_pool_show_list") %>
+              <li><a  id="nav-vdi_desktop_pool" href="/vdi_desktop_pool" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"vdi_desktop_pool") %></a></li>
+            <% end %>
+            <% if role_allows(:feature=>"vdi_desktop_show_list") %>
+              <li><a  id="nav-vdi_desktop" href="/vdi_desktop" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"vdi_desktop") %></a></li>
+            <% end %>
+            <% if role_allows(:feature=>"vdi_endpoint_device_show_list") %>
+              <li><a  id="nav-vdi_endpoint_device" href="/vdi_endpoint_device" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"vdi_endpoint_device") %></a></li>
+            <% end %>
+            <% if role_allows(:feature=>"vdi_user_show_list") %>
+              <li><a  id="nav-vdi_user" href="/vdi_user" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"vdi_user") %></a></li>
+            <% end %>
+            <% if role_allows(:feature=>"vm_vdi_show_list") %>
+              <li><a  id="nav-vm_vdi" href="/vm_vdi" onclick="return miqMenuChosen()">VMs</a></li>
+            <% end %>
+          </ul>
+        </li>
+      <% end %>
+    <% end %>
+
+    <% if get_vmdb_config[:product][:storage] %>
+      <% if role_allows(:main_tab=>MAIN_TABS[:sto]) %>
+        <li class="nav-smis_storage"><a id="nav-smis_storage-a" href="/dashboard/maintab/?tab=sto" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:sto]) %></a>
+          <ul id="nav-smis_storage" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+            <% if role_allows(:feature=>"ontap_storage_system_show_list") %>
+              <li><a  id="nav-ontap_storage_system" href="/ontap_storage_system" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"ontap_storage_system") %></a></li>
+            <% end %>
+            <% if role_allows(:feature=>"ontap_logical_disk_show_list") %>
+              <li><a  id="nav-ontap_logical_disk" href="/ontap_logical_disk" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"ontap_logical_disk") %></a></li>
+            <% end %>
+            <% if role_allows(:feature=>"ontap_storage_volume_show_list") %>
+              <li><a  id="nav-ontap_storage_volume" href="/ontap_storage_volume" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"ontap_storage_volume") %></a></li>
+            <% end %>
+            <% if role_allows(:feature=>"ontap_file_share_show_list") %>
+              <li><a  id="nav-ontap_file_share" href="/ontap_file_share" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"ontap_file_share") %></a></li>
+            <% end %>
+            <% if false %>
+              <% if role_allows(:feature=>"cim_base_storage_extent_show_list") %>
+                <li><a  id="nav-cim_base_storage_extent" href="/cim_base_storage_extent" onclick="return miqMenuChosen()">Base Extents</a></li>
+              <% end %>
+            <% end %>
+            <% if role_allows(:feature=>"storage_manager_show_list") %>
+              <li><a  id="nav-storage_manager" href="/storage_manager" onclick="return miqMenuChosen()">Storage Managers</a></li>
+            <% end %>
+          </ul>
+        </li>
+      <% end %>
+    <% end %>
+
+    <% if role_allows(:main_tab=>MAIN_TABS[:con]) %>
+      <li class="nav-policies"><a id="nav-policies-a" href="/dashboard/maintab/?tab=con" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:con]) %></a>
+        <ul id="nav-policies" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+          <% if role_allows(:feature=>"control_explorer_view") %>
+            <li><a  id="nav-miq_policy" href="/miq_policy/explorer" onclick="return miqMenuChosen()">Explorer</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"policy_simulation") %>
+            <li><a  id="nav-miq_policy_rsop" href="/miq_policy/rsop" onclick="return miqMenuChosen()">Simulation</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"policy_import_export") %>
+            <li><a  id="nav-miq_policy_export" href="/miq_policy/export" onclick="return miqMenuChosen()">Import / Export</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"policy_log") %>
+            <li><a  id="nav-miq_policy_logs" href="/miq_policy/log" onclick="return miqMenuChosen()">Log</a></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+
+    <% if role_allows(:main_tab=>MAIN_TABS[:aut]) %>
+      <li class="nav-automation"><a id="nav-automation-a" href="/dashboard/maintab/?tab=aut" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:aut]) %></a>
+        <ul id="nav-automation" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+          <% if role_allows(:feature=>"miq_ae_class_explorer") %>
+            <li><a  id="nav-ae-browser" href="/miq_ae_class/explorer" onclick="return miqMenuChosen()">Explorer</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"miq_ae_class_simulation") %>
+            <li><a  id="nav-ae-tools" href="/miq_ae_tools/resolve" onclick="return miqMenuChosen()">Simulation</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"miq_ae_class_custom_button") %>
+            <li><a  id="nav-ae-customization" href="/miq_ae_customization/explorer" onclick="return miqMenuChosen()">Customization</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"miq_ae_class_import_export") %>
+            <li><a  id="nav-ae-export" href="/miq_ae_tools/import_export" onclick="return miqMenuChosen()">Import / Export</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"miq_ae_class_log") %>
+            <li><a  id="nav-ae-logs" href="/miq_ae_tools/log" onclick="return miqMenuChosen()">Log</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"miq_request_show_list") %>
+            <li><a  id="nav-ae-provision" href="/miq_request?typ=ae" onclick="return miqMenuChosen()">Requests</a></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+
+    <% if role_allows(:main_tab=>MAIN_TABS[:opt]) %>
+      <li class="nav-optimize"><a id="nav-optimize-a" href="/dashboard/maintab/?tab=opt" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:opt]) %></a>
+        <ul id="nav-optimize" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+          <% if role_allows(:feature=>"utilization") %>
+            <li>	<a  id="nav-optimize_utilization" href="/miq_capacity" onclick="return miqMenuChosen()">Utilization</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"planning") %>
+            <li>	<a  id="nav-optimize_planning" href="/miq_capacity/planning" onclick="return miqMenuChosen()">Planning</a></li>
+          <% end %>
+          <% if role_allows(:feature=>"bottlenecks") %>
+            <li>	<a  id="nav-optimize_bottlenecks" href="/miq_capacity/bottlenecks" onclick="return miqMenuChosen()">Bottlenecks</a></li>
+          <% end %>
+          <% if false %><%# Waste tab on hold for now %>
+            <li>	<a  id="nav-optimize_waste" href="/miq_capacity/waste" onclick="return miqMenuChosen()">Waste</a></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+
+    <% if get_vmdb_config[:product][:proto] %><%# Hiding behind proto - Sprint 34%>
+      <% if role_allows(:main_tab=>"Services") %>
+        <li class="nav-v-service"><a  id="nav-v-service-a" href="/dashboard/maintab/?tab=VS" onclick="return miqMenuChosen()">Services</a></li>
+      <% end %>
+    <% end  %>
+
+    <% if role_allows(:main_tab=>MAIN_TABS[:set]) %>
+      <li class="nav-configuration" >
+        <a id="nav-configuration-a" href="/dashboard/maintab/?tab=set" onclick="return miqMenuChosen()" title="<%= h(MAIN_TABS[:set]) %>">
+          Configure
+        </a>
+        <ul id="nav-configuration" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
+          <% if role_allows(:feature=>"about") %>
+            <% if role_allows(:feature=>"my_settings", :any=>true) %>
+              <li><a  id="nav-ui" href="/configuration/index?config_tab=ui" onclick="return miqMenuChosen()">My Settings</a></li>
+            <% end %>
+            <% if role_allows(:feature=>"tasks", :any=>true) %>
+              <li><a  id="nav-my-jobs" href="/miq_proxy/index?jobs_tab=tasks" onclick="return miqMenuChosen()">Tasks</a></li>
+            <% end %>
+            <% if role_allows(:feature=>"ops_explorer", :any=>"true") %>
+              <li><a  id="nav-ops" href="/ops/explorer" onclick="return miqMenuChosen()">Configuration</a></li>
+            <% end %>
+            <% if role_allows(:feature=>"miq_proxy_show_list") %>
+              <li><a  id="nav-proxy" href="/miq_proxy" onclick="return miqMenuChosen()">SmartProxies</a></li>
+            <% end %>
+              <li><a id="nav-about" href="/support/index?support_tab=about" onclick="return miqMenuChosen()">About</a></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+ </ul>
+</div>
