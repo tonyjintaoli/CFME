@@ -3,6 +3,45 @@
 
 "en":
 
+  main_tabs:
+    vi:  "Cloud Intelligence"
+    svc: "Services"
+    inf: "Infrastructure"
+    clo: "Clouds"
+    vdi: "VDI"
+    sto: "Storage"
+    con: "Control"
+    aut: "Automate"
+    opt: "Optimize"
+    set: "Settings & Operations"
+    cfg: "Configure"
+  navbar:
+    Dashboard: "Dashboard"
+    Reports: "Reports"
+    Usage: "Usage"
+    Chargeback: "Chargeback"
+    Timelines: "Timelines"
+    RSS: "RSS"
+    MyServices: "My Services"
+    Catalogs: "Catalogs"
+    Workloads: "Workloads"
+    Requests: "Requests"
+    Providers: "Providers"
+    AvailabilityZones: "Availability Zones"
+    Flavors: "Flavors"
+    SecurityGroups: "Security Groups"
+    Instances: "Instances"
+    Providers: "Providers"
+    Clusters: "Clusters"
+    Hosts: "Hosts"
+    Networks: "Networks"
+    VirtualMachines: "Virtual Machines"
+    ResourcePools: "Resource Pools"
+    Repositories: "Repositories"
+    PXE: "PXE"
+    Requests: "Requests"
+    Storages: "Storages"
+
   # Flash messages shown in the UI
   flash:
     add:

@@ -4,104 +4,107 @@
 <div class="navbar">
   <ul id="maintab" >
     <% if role_allows(:main_tab=>MAIN_TABS[:vi]) %>
-      <li class="nav-v-intelligence"><a id="nav-v-intelligence-a" href="/dashboard/maintab/?tab=vi" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:vi]) %></a>
+      <li class="nav-v-intelligence"><a id="nav-v-intelligence-a" href="/dashboard/maintab/?tab=vi" onclick="return miqMenuChosen()"><%= t("main_tabs.vi")%></a>
         <ul id="nav-v-intelligence" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
           <% if role_allows(:feature=>"dashboard_view") %>
-            <li><a  id="nav-dashboard" href="/dashboard/" onclick="return miqMenuChosen()">Dashboard</a></li>
+            <li><a  id="nav-dashboard" href="/dashboard/" onclick="return miqMenuChosen()"><%= t("navbar.Dashboard") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"miq_report", :any=>true) %>
-            <li><a  id="nav-report" href="/report/explorer/" onclick="return miqMenuChosen()">Reports</a></li>
+            <li><a  id="nav-report" href="/report/explorer/" onclick="return miqMenuChosen()"><%= t("navbar.Reports") %></a></li>
           <% end %>
 
           <%# Hiding usage for now - release 5.2 %>
           <% if false %>
             <% if role_allows(:feature=>"usage") %>
-              <li><a  id="nav-usage" href="/report/usage/" onclick="return miqMenuChosen()">Usage</a>	</li>
+              <li><a  id="nav-usage" href="/report/usage/" onclick="return miqMenuChosen()"><%= t("navbar.Usage") %></a>	</li>
             <% end %>
           <% end %>
 
           <% if role_allows(:feature=>"chargeback", :any=>true) %>
-            <li><a  id="nav-chargeback" href="/chargeback/explorer/" onclick="return miqMenuChosen()">Chargeback</a></li>
+            <li><a  id="nav-chargeback" href="/chargeback/explorer/" onclick="return miqMenuChosen()"><%= t("navbar.Chargeback") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"timeline") %>
-            <li><a  id="nav-timeline" href="/dashboard/timeline/" onclick="return miqMenuChosen()">Timelines</a></li>
+            <li><a  id="nav-timeline" href="/dashboard/timeline/" onclick="return miqMenuChosen()"><%= t("navbar.Timelines") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"rss") %>
-            <li><a  id="nav-rss" href="/alert/" onclick="return miqMenuChosen()">RSS</a></li>
+            <li><a  id="nav-rss" href="/alert/" onclick="return miqMenuChosen()"><%= t("navbar.RSS") %></a></li>
           <% end %>
         </ul>
       </li>
     <% end %>
 
     <% if role_allows(:main_tab=>MAIN_TABS[:svc]) %>
-      <li class="nav-vms"><a  id="nav-vms-a" href="/dashboard/maintab/?tab=svc" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:svc]) %></a>
+      <li class="nav-vms"><a  id="nav-vms-a" href="/dashboard/maintab/?tab=svc" onclick="return miqMenuChosen()"><%= t("main_tabs.svc") %></a>
         <ul id="nav-vms" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
           <% if role_allows(:feature=>"service") %>
-            <li><a  id="nav-services" href="/service/explorer" onclick="return miqMenuChosen()">My Services</a></li>
+            <li><a  id="nav-services" href="/service/explorer" onclick="return miqMenuChosen()"><%= t("navbar.MyServices") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"catalog", :any=>true) %>
-            <li><a  id="nav-catalogs" href="/catalog/explorer" onclick="return miqMenuChosen()">Catalogs</a></li>
+            <li><a  id="nav-catalogs" href="/catalog/explorer" onclick="return miqMenuChosen()"><%= t("navbar.Catalogs") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"vm_explorer_accords", :any=>true) %>
-            <li><a  id="nav-vm_explorer" href="/vm_or_template/explorer" onclick="return miqMenuChosen()">Workloads</a></li>
+            <li><a  id="nav-vm_explorer" href="/vm_or_template/explorer" onclick="return miqMenuChosen()"><%= t("navbar.Workloads") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"miq_request_show_list") %>
-            <li><a  id="nav-vm-provision" href="/miq_request?typ=vm" onclick="return miqMenuChosen()">Requests</a></li>
+            <li><a  id="nav-vm-provision" href="/miq_request?typ=vm" onclick="return miqMenuChosen()"><%= t("navbar.Requests") %></a></li>
           <% end %>
         </ul>
       </li>
     <% end %>
     <% if role_allows(:main_tab=>MAIN_TABS[:clo]) %>
-      <li class="nav-cloud"><a id="nav-cloud-a" href="/dashboard/maintab/?tab=clo" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:clo]) %></a>
+      <li class="nav-cloud"><a id="nav-cloud-a" href="/dashboard/maintab/?tab=clo" onclick="return miqMenuChosen()"><%= t("main_tabs.clo") %></a>
         <ul id="nav-cloud" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
           <% if role_allows(:feature=>"ems_cloud_show_list") %>
-            <li><a  id="nav-ems_cloud" href="/ems_cloud" onclick="return miqMenuChosen()">Providers</a></li>
+            <li><a  id="nav-ems_cloud" href="/ems_cloud" onclick="return miqMenuChosen()"><%= t("navbar.Providers") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"availability_zone_show_list") %>
-            <li><a  id="nav-availability_zone" href="/availability_zone" onclick="return miqMenuChosen()">Availability Zones</a></li>
+            <li><a  id="nav-availability_zone" href="/availability_zone" onclick="return miqMenuChosen()"><%= t("navbar.AvailabilityZones") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"flavor_show_list") %>
-            <li><a  id="nav-flavor" href="/flavor" onclick="return miqMenuChosen()">Flavors</a></li>
+            <li><a  id="nav-flavor" href="/flavor" onclick="return miqMenuChosen()"><%= t("navbar.Flavors") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"security_group_show_list") %>
-            <li><a  id="nav-security_group" href="/security_group" onclick="return miqMenuChosen()">Security Groups</a></li>
+            <li><a  id="nav-security_group" href="/security_group" onclick="return miqMenuChosen()"><%= t("navbar.SecurityGroups") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"vm_cloud_explorer_accords", :any=>true) %>
-            <li><a  id="nav-vm_cloud" href="/vm_cloud/explorer" onclick="return miqMenuChosen()">Instances</a></li>
+            <li><a  id="nav-vm_cloud" href="/vm_cloud/explorer" onclick="return miqMenuChosen()"><%= t("navbar.Instances") %></a></li>
           <% end %>
         </ul>
       </li>
     <% end %>
 
     <% if role_allows(:main_tab=>MAIN_TABS[:inf]) %>
-      <li class="nav-infrastructure"><a id="nav-infrastructure-a" href="/dashboard/maintab/?tab=inf" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:inf]) %></a>
+      <li class="nav-infrastructure"><a id="nav-infrastructure-a" href="/dashboard/maintab/?tab=inf" onclick="return miqMenuChosen()"><%= t("main_tabs.inf") %></a>
         <ul id="nav-infrastructure" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
           <% if role_allows(:feature=>"ems_infra_show_list") %>
-            <li><a  id="nav-ems_infra" href="/ems_infra" onclick="return miqMenuChosen()">Providers</a></li>
+            <li><a  id="nav-ems_infra" href="/ems_infra" onclick="return miqMenuChosen()"><%= t("navbar.Providers") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"ems_cluster_show_list") %>
-            <li><a  id="nav-clusters" href="/ems_cluster" onclick="return miqMenuChosen()">Clusters</a></li>
+            <li><a  id="nav-clusters" href="/ems_cluster" onclick="return miqMenuChosen()"><%= t("navbar.Clusters") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"host_show_list") %>
-            <li><a  id="nav-host" href="/host" onclick="return miqMenuChosen()">Hosts</a></li>
+            <li><a  id="nav-host" href="/host" onclick="return miqMenuChosen()"><%= t("navbar.Hosts") %></a></li>
+          <% end %>
+          <% if role_allows(:feature=>"host_show_list") %>
+            <li><a  id="nav-networks" href="/networks" onclick="return miqMenuChosen()"><%= t("navbar.Networks") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"vm_infra_explorer_accords", :any=>true) %>
-            <li><a  id="nav-vm_infra" href="/vm_infra/explorer" onclick="return miqMenuChosen()">Virtual Machines</a></li>
+            <li><a  id="nav-vm_infra" href="/vm_infra/explorer" onclick="return miqMenuChosen()"><%= t("navbar.VirtualMachines") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"resource_pool_show_list") %>
-            <li><a  id="nav-resource_pools" href="/resource_pool" onclick="return miqMenuChosen()">Resource Pools</a></li>
+            <li><a  id="nav-resource_pools" href="/resource_pool" onclick="return miqMenuChosen()"><%= t("navbar.ResourcePools") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"storage_show_list") %>
-            <li><a  id="nav-storage" href="/storage" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"storages") %></a></li>
+            <li><a  id="nav-storage" href="/storage" onclick="return miqMenuChosen()"><%= t("navbar.Storages") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"repository_show_list") %>
-            <li><a  id="nav-repository" href="/repository" onclick="return miqMenuChosen()">Repositories</a></li>
+            <li><a  id="nav-repository" href="/repository" onclick="return miqMenuChosen()"><%= t("navbar.Repositories") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"pxe") %>
-            <li><a  id="nav-pxe" href="/pxe/explorer" onclick="return miqMenuChosen()">PXE</a></li>
+            <li><a  id="nav-pxe" href="/pxe/explorer" onclick="return miqMenuChosen()"><%= t("navbar.PXE") %></a></li>
           <% end %>
           <% if role_allows(:feature=>"miq_request_show_list") %>
-            <li><a  id="nav-host-provision" href="/miq_request?typ=host" onclick="return miqMenuChosen()">Requests</a></li>
+            <li><a  id="nav-host-provision" href="/miq_request?typ=host" onclick="return miqMenuChosen()"><%= t("navbar.Requests") %></a></li>
           <% end %>
         </ul>
       </li>
@@ -109,7 +112,7 @@
 
     <% if get_vmdb_config[:product][:vdi] %>
       <% if role_allows(:main_tab=>MAIN_TABS[:vdi]) %>
-        <li class="nav-vdi"><a id="nav-vdi-a" href="/dashboard/maintab/?tab=vdi" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:vdi]) %></a>
+        <li class="nav-vdi"><a id="nav-vdi-a" href="/dashboard/maintab/?tab=vdi" onclick="return miqMenuChosen()"><%= t("main_tabs.vdi") %></a>
           <ul id="nav-vdi" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
             <% if role_allows(:feature=>"vdi_farm_show_list") %>
               <li><a  id="nav-vdi_farm" href="/vdi_farm" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"vdi_farm") %></a></li>
@@ -139,7 +142,7 @@
 
     <% if get_vmdb_config[:product][:storage] %>
       <% if role_allows(:main_tab=>MAIN_TABS[:sto]) %>
-        <li class="nav-smis_storage"><a id="nav-smis_storage-a" href="/dashboard/maintab/?tab=sto" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:sto]) %></a>
+        <li class="nav-smis_storage"><a id="nav-smis_storage-a" href="/dashboard/maintab/?tab=sto" onclick="return miqMenuChosen()"><%= t("main_tabs.sto") %></a>
           <ul id="nav-smis_storage" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
             <% if role_allows(:feature=>"ontap_storage_system_show_list") %>
               <li><a  id="nav-ontap_storage_system" href="/ontap_storage_system" onclick="return miqMenuChosen()"><%= ui_lookup(:tables=>"ontap_storage_system") %></a></li>
@@ -167,7 +170,7 @@
     <% end %>
 
     <% if role_allows(:main_tab=>MAIN_TABS[:con]) %>
-      <li class="nav-policies"><a id="nav-policies-a" href="/dashboard/maintab/?tab=con" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:con]) %></a>
+      <li class="nav-policies"><a id="nav-policies-a" href="/dashboard/maintab/?tab=con" onclick="return miqMenuChosen()"><%= t("main_tabs.con") %></a>
         <ul id="nav-policies" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
           <% if role_allows(:feature=>"control_explorer_view") %>
             <li><a  id="nav-miq_policy" href="/miq_policy/explorer" onclick="return miqMenuChosen()">Explorer</a></li>
@@ -186,7 +189,7 @@
     <% end %>
 
     <% if role_allows(:main_tab=>MAIN_TABS[:aut]) %>
-      <li class="nav-automation"><a id="nav-automation-a" href="/dashboard/maintab/?tab=aut" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:aut]) %></a>
+      <li class="nav-automation"><a id="nav-automation-a" href="/dashboard/maintab/?tab=aut" onclick="return miqMenuChosen()"><%= t("main_tabs.aut") %></a>
         <ul id="nav-automation" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
           <% if role_allows(:feature=>"miq_ae_class_explorer") %>
             <li><a  id="nav-ae-browser" href="/miq_ae_class/explorer" onclick="return miqMenuChosen()">Explorer</a></li>
@@ -211,7 +214,7 @@
     <% end %>
 
     <% if role_allows(:main_tab=>MAIN_TABS[:opt]) %>
-      <li class="nav-optimize"><a id="nav-optimize-a" href="/dashboard/maintab/?tab=opt" onclick="return miqMenuChosen()"><%= h(MAIN_TABS[:opt]) %></a>
+      <li class="nav-optimize"><a id="nav-optimize-a" href="/dashboard/maintab/?tab=opt" onclick="return miqMenuChosen()"><%= t("main_tabs.opt") %></a>
         <ul id="nav-optimize" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
           <% if role_allows(:feature=>"utilization") %>
             <li>	<a  id="nav-optimize_utilization" href="/miq_capacity" onclick="return miqMenuChosen()">Utilization</a></li>
@@ -237,8 +240,8 @@
 
     <% if role_allows(:main_tab=>MAIN_TABS[:set]) %>
       <li class="nav-configuration" >
-        <a id="nav-configuration-a" href="/dashboard/maintab/?tab=set" onclick="return miqMenuChosen()" title="<%= h(MAIN_TABS[:set]) %>">
-          Configure
+        <a id="nav-configuration-a" href="/dashboard/maintab/?tab=set" onclick="return miqMenuChosen()" title="<%= t("main_tabs.set") %>">
+          <%= t("main_tabs.cfg") %>
         </a>
         <ul id="nav-configuration" style="display:none;filter:alpha(opacity=0);-moz-opacity:0;">
           <% if role_allows(:feature=>"about") %>
