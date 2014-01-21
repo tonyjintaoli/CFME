@@ -6,8 +6,8 @@
   main_tabs:
     vi:  "云情况报告"
     svc: "云服务"
-    inf: "基础架构"
-    clo: "云"
+    inf: "虚拟化架构"
+    clo: "云架构"
     vdi: "虚拟桌面"
     sto: "存储"
     con: "控制"
