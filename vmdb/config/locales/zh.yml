@@ -102,6 +102,7 @@
       field_unique_within_group: "%{field} must be unique for this group"
       field_value_and_description_reuired: "%{field1} and %{field2} fields can't be blank"
       field_value_in_use: "%{field} '%{value}' is already in use"
+      field_must_be_changed: "Change %{field} value to submit reconfigure request"
       field_must_be:
         configured: "%{field} must be configured"
         numeric: "%{field} must be numeric"
@@ -421,6 +422,7 @@
       deleted_for_records: "The selected %{model} were deleted"
       item_no_longer_exists: "Last selected %{model} no longer exists"
       no_longer_exists: "%{model} no longer exists"
+      selected_item_no_longer_exists: "Selected %{model} no longer exists"
       task_initiated: "%{model}: %{task} successfully initiated"
       task_initiated_for_model: "%{task} initiated for %{count_model} from the CFME Database"
       task_initiated_for_record: '"%{record}": %{task} successfully initiated'
@@ -614,6 +616,12 @@
       second: "秒"
 
   activerecord:
+    attributes:
+      ems_amazon:
+        hostname: "Region"
+      ext_management_system:
+        hostname: "Host Name"
+        ipaddress: "IP Address"
     errors:
       template:
         header:

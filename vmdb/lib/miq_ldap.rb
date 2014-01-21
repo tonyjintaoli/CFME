@@ -3,6 +3,7 @@
 #
 
 require 'net/ldap'
+require 'ldap_fluff'
 
 class MiqLdap
   DEFAULT_LDAP_PORT      = 389
@@ -29,6 +30,7 @@ class MiqLdap
       :port => @auth[:ldapport],
     }
     options = defaults.merge(options)
+
     options[:encryption] = { :method =>:simple_tls } if mode == "ldaps"
 
     options[:host] = self.resolve_host(options[:host], options[:port])
@@ -86,6 +88,24 @@ class MiqLdap
           $log.info("#{log_prefix} Binding to LDAP: Host: [#{@ldap.host}], User: [#{username}]... successful")
           return true
         else
+          @ipa = Net::LDAP.new :host       => @ldap.host,
+                                :base       => @basedn,
+                                :port       => @ldap.port,
+                                :encryption => :start_tls
+
+          @user_DN = "#{username},#{@basedn}"
+          @ipa.auth @user_DN,password
+          if @ipa.bind
+              @ldap = Net::LDAP.new :host       => @ldap.host,
+                                    :base       => @basedn,
+                                    :port       => @ldap.port,
+                                    :encryption => :start_tls
+              @ldap.auth @auth[:bind_dn], @auth[:bind_pwd]
+              if @ldap.bind
+                $log.info("#{log_prefix} Binding to LDAP: Host: [#{@ldap.host}], User: [#{username}]... successful")
+                return true
+              end
+          end
           $log.warn("#{log_prefix} Binding to LDAP: Host: [#{@ldap.host}], User: [#{username}]... unsuccessful")
           return false
         end
@@ -152,11 +172,33 @@ class MiqLdap
     seen                  ||= {:objects => [], :referrals => {}}
     $log.debug("#{log_prefix} opts: #{opts.inspect}")
 
+    is_ipa = false
+    begin
+        @ldap = Net::LDAP.new :host       => @ldap.host,
+                          :base       => @basedn,
+                          :port       => @ldap.port,
+                          :encryption => :start_tls
+        @ldap.auth @auth[:bind_dn], @auth[:bind_pwd]
+        if @ldap.bind
+            is_ipa = true
+        end
+    rescue Exception => err
+        $log.error("#{log_prefix} Binding to LDAP: Host: [#{@ldap.host}], User: [#{@auth[:bind_dn]}], '#{err.message}'")
+    end
+
     if block_given?
       opts[:return_result] = false
       return @ldap.search(opts) { |entry| yield entry if block_given? }
     else
-      result = @ldap.search(opts)
+      if is_ipa
+          if opts[:uid].nil?
+             return []
+          else
+             result = @ldap.search({:filter=>Net::LDAP::Filter.eq("uid", opts[:uid])})
+          end
+      else
+          result = @ldap.search(opts)
+      end
       unless ldap_result_ok?
         $log.warn("#{log_prefix} LDAP Search unsuccessful, '#{@ldap.get_operation_result.message}', Code: [#{@ldap.get_operation_result.code}], Host: [#{@ldap.host}]")
         return []
@@ -285,22 +327,25 @@ class MiqLdap
 
   def get_user_object(username, user_type = nil)
     log_prefix = "MIQ(MiqLdap.get_user_object)"
-
-    user_type ||= @user_type.split("-").first
-    user_type = "dn" if self.is_dn?(username)
+    search_opts = {:base => @basedn, :scope => :sub}
     begin
-      search_opts = {:base => @basedn, :scope => :sub}
+      user_type ||= @user_type.split("-").first
+      user_type = "dn" if self.is_dn?(username)
 
       case user_type
       when "upn", "userprincipalname", "mail"
-        user_type = "userprincipalname" if user_type == "upn"
-        search_opts[:filter] = "(#{user_type}=#{username})"
+             user_type = "userprincipalname" if user_type == "upn"
+             search_opts[:filter] = "(#{user_type}=#{username})"
       when "dn"
-        search_opts.merge!(:base => username, :scope => :base)
+             search_opts.merge!(:base => username, :scope => :base)
+             if username.nil?
+                $log.info("#{log_prefix} Type: [#{user_type}], Base DN: [#{@basedn}], Filter: <all Users>")
+             else
+                search_opts[:uid] = username.split("=")[1]
+             end
       when "sid"
-        search_opts[:filter] = self.class.object_sid_filter(username)
+             search_opts[:filter] = self.class.object_sid_filter(username)
       end
-
       $log.info("#{log_prefix} Type: [#{user_type}], Base DN: [#{@basedn}], Filter: <#{search_opts[:filter]}>")
       obj = self.search(search_opts)
     rescue Exception => err
@@ -365,6 +410,11 @@ class MiqLdap
     $log.debug "#{log_prefix} Groups: #{groups.inspect}"
     return result unless groups
 
+    sid = MiqLdap.get_attr(obj, :objectsid)
+    if sid.nil?
+       $log.debug("#{log_prefix} ON IPA We do not have objectSID")
+       result  = groups.collect { |g| g.sub(/.*?cn=(.*?),.*/, '\1') }
+    else
     groups.each {|group|
       # puts "group #{group}"
       gobj = self.get(group, [:cn, attr])
@@ -391,8 +441,8 @@ class MiqLdap
         followed.push(dn)
         result.concat(self.get_memberships(gobj, max_depth, attr, followed, current_depth)) unless max_depth > 0 && current_depth >= max_depth
       end
-
     }
+    end
     $log.debug "#{log_prefix} Exit get_memberships: #{obj.dn}, result: #{result.uniq.inspect}"
     result.uniq
   end

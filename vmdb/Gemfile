@@ -18,7 +18,8 @@ gem "rails",                          "=3.2.13"
 gem "ruport",                         "=1.7.0"
 
 # Vendored but not required
-gem "net-ldap",                       "=0.2.20110317223538",  :require => false
+gem "net-ldap",                       "~>0.3.1",      :require => false
+gem "ldap_fluff",      		      "~>0.2.2",      :require => false
 gem "rubyrep",                        "=1.2.0",       :require => false
 gem "soap4r",                         "=1.6.0",       :require => false
 gem "simple-rss",                     "=1.2.3",       :require => false
@@ -49,7 +50,7 @@ gem "fog",                            "~>1.14.0",     :require => false
 gem "highline",                       "~>1.6.9",      :require => false
 gem "inifile",                        "~>2.0.2",      :require => false
 gem "logging",                        "~>1.6.1",      :require => false  # Ziya depends on this
-gem "net-ping",                       "~>1.5.3",      :require => false
+gem "net-ping",                       "~>1.7.1",      :require => false
 gem "net-sftp",                       "~>2.0.5",      :require => false
 gem "net-ssh",                        "~>2.6.5",      :require => false  # fog 1.13 wants net-ssh 2.6.5
 gem "open4",                          "~>1.3.0",      :require => false

@@ -1241,6 +1241,8 @@ class ApplicationController < ActionController::Base
         case view.col_order[col_idx]
         when "db"
           celltext = Dictionary::gettext(row[col], :type=>:model, :notfound=>:titleize)
+        when "approval_state"
+          celltext = PROV_STATES[row[col]]
         when "state"
           celltext = row[col].titleize
         when "hardware.bitness"
@@ -1411,9 +1413,17 @@ class ApplicationController < ActionController::Base
   # used as a before_filter for controller actions to check that
   # the currently logged in user has rights to perform the requested action
   def check_privileges
+
+    if session[:userid] && session[:userrole] == 'super_administrator' &&
+      Time.now - session[:last_trans_time] < get_vmdb_config[:session][:timeout]  # Session not timed out
+        session[:last_trans_time] = Time.now
+        return
+    end
+
     if !session[:userid] ||                                                                           # User not signed on
       Time.now - session[:last_trans_time] > get_vmdb_config[:session][:timeout] || # Session has timed out
       (MiqServer.my_server(true).logon_status != :ready && session[:userrole] != 'super_administrator')   # Server is not ready
+
 
       # If session timed out, set flag
       timed_out = false
@@ -1443,6 +1453,11 @@ class ApplicationController < ActionController::Base
       else                          # Not Ajax, do a simple redirect
         redirect_to :controller=>'dashboard', :action => 'login', :timeout => timed_out
       end
+      return
+    end
+
+    unless request.referer.to_s.starts_with?(session['referer'])
+      render :status => :forbidden, :text => ''
       return
     end
 
@@ -1946,6 +1961,7 @@ class ApplicationController < ActionController::Base
     end
 
     # Build the advanced search @edit hash
+    # if (@explorer && !@in_a_form && !["adv_search_clear","tree_select"].include?(request.parameters["action"]))||
     if (@explorer && !@in_a_form)||
        (request.parameters["action"] == "show_list" && !session[:menu_click])
       adv_search_build(db.to_s.split("::").last)
@@ -2785,6 +2801,11 @@ class ApplicationController < ActionController::Base
     raise "Invalid input" unless is_integer?(id)
 
     userid     = session[:userid]
+
+    unless db.where(:id => from_cid(id)).exists?
+      msg = I18n.t("flash.record.selected_item_no_longer_exists", :model => ui_lookup(:model => db.to_s))
+      raise msg
+    end
 
     msg = "User '#{userid}' is not authorized to access '#{ui_lookup(:model=>db.to_s)}' record id '#{id}'"
     conditions = ["#{db.table_name}.id = ?", id]

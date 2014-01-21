@@ -432,24 +432,57 @@ class User < ActiveRecord::Base
         task.state_finished
         return nil
       end
+      sid = MiqLdap.get_attr(lobj, :objectsid)
+      if sid.nil?
+         $log.debug("#{log_prefix} ON IPA We do not have objectSID")
+         matching_groups = self.match_ipa_groups(ldap, lobj)
+         if matching_groups.empty?
+            msg = "Authentication failed for userid #{fq_user}, unable to match IPA user's group membership to an EVM role"
+            $log.warn("#{log_prefix}: #{msg}")
+            AuditEvent.failure(audit.merge(:message => msg))
+            task.error(msg)
+            task.state_finished
+            return nil
+         end
+         userid = ldap.normalize(ldap.get_attr(lobj, :userprincipalname) || fq_user)
+         $log.debug("#{log_prefix} User obj from LDAP: #{userid}")
 
-      matching_groups = self.match_ldap_groups(ldap, lobj)
-      if matching_groups.empty?
-        msg = "Authentication failed for userid #{fq_user}, unable to match user's group membership to an EVM role"
-        $log.warn("#{log_prefix}: #{msg}")
-        AuditEvent.failure(audit.merge(:message => msg))
-        task.error(msg)
-        task.state_finished
-        return nil
+         begin
+            uid=userid.split("=")[1]
+         rescue Exception => err
+            uid = userid
+         end
+
+         if uid.nil?
+            uid = userid
+         end
+         $log.debug("#{log_prefix} User obj from UID: #{uid}")
+         user   = self.find_by_userid(uid) || self.new(:userid => uid)
+         $log.debug("#{log_prefix} User obj from USER: #{user.inspect}")
+         #TODO 
+         #user.update_attrs_from_ldap(ldap, lobj)
+         user.update_rbac(matching_groups)
+         user.lastlogon = Time.now.utc
+         user.save!
+         $log.info("#{log_prefix}: Authorized User FQDN: [#{fq_user}]")
+      else      
+         matching_groups = self.match_ldap_groups(ldap, lobj)
+         if matching_groups.empty?
+            msg = "Authentication failed for userid #{fq_user}, unable to match user's group membership to an EVM role"
+            $log.warn("#{log_prefix}: #{msg}")
+            AuditEvent.failure(audit.merge(:message => msg))
+            task.error(msg)
+            task.state_finished
+            return nil
+         end
+         userid = ldap.normalize(ldap.get_attr(lobj, :userprincipalname) || fq_user)
+         user   = self.find_by_userid(userid) || self.new(:userid => userid)
+         user.update_attrs_from_ldap(ldap, lobj)
+         user.update_rbac(matching_groups)
+         user.lastlogon = Time.now.utc
+         user.save!
+         $log.info("#{log_prefix}: Authorized User FQDN: [#{fq_user}]")
       end
-
-      userid = ldap.normalize(ldap.get_attr(lobj, :userprincipalname) || fq_user)
-      user   = self.find_by_userid(userid) || self.new(:userid => userid)
-      user.update_attrs_from_ldap(ldap, lobj)
-      user.update_rbac(matching_groups)
-      user.lastlogon = Time.now.utc
-      user.save!
-      $log.info("#{log_prefix}: Authorized User FQDN: [#{fq_user}]")
 
       task.userid = user.userid
       task.update_status("Finished", "Ok", "User authorized successfully")
@@ -667,23 +700,32 @@ class User < ActiveRecord::Base
 
     if authentication.has_key?(:user_proxies)       && !authentication[:user_proxies].blank?  &&
        authentication.has_key?(:get_direct_groups)  && authentication[:get_direct_groups] == false
-      $log.info("MIQ(User.getUserMembership) Skipping getting group memberships directly assigned to user bacause it has been disabled in the configuration")
-      groups = []
+       $log.info("MIQ(User.getUserMembership) Skipping getting group memberships directly assigned to user bacause it has been disabled in the configuration")
+       groups = []
     else
-      groups = ldap.get_memberships(obj, authentication[:group_memberships_max_depth])
+       groups = ldap.get_memberships(obj, authentication[:group_memberships_max_depth])
     end
-
+    is_ipa = false
     if authentication.has_key?(:user_proxies)
       sid = MiqLdap.get_attr(obj, :objectsid)
-      $log.warn("MIQ(User.getUserMembership) User Object has no objectSID") if sid.nil?
+      if sid.nil?
+         $log.warn("MIQ(User.getUserMembership) ON IPA We do not have objectSID") 
+         is_ipa = true       
+      end
+      #$log.warn("MIQ(User.getUserMembership) User Object has no objectSID") if sid.nil?
 
-      authentication[:user_proxies].each do |auth|
-        begin
-          groups += self.getUserProxyMembership(auth, MiqLdap.sid_to_s(sid))
-        rescue Exception => err
-          $log.warn("MIQ(User.getUserMembership) #{err.message} (from User.getUserProxyMembership)")
-        end
-      end unless sid.nil?
+      if is_ipa
+        # on IPA we going to map groups on obj memberof
+        # TODO:
+      else
+        authentication[:user_proxies].each do |auth|
+          begin
+            groups += self.getUserProxyMembership(auth, MiqLdap.sid_to_s(sid))
+          rescue Exception => err
+            $log.warn("MIQ(User.getUserMembership) #{err.message} (from User.getUserProxyMembership)")
+          end
+        end unless sid.nil?
+      end
     end
 
     groups.uniq
@@ -698,6 +740,18 @@ class User < ActiveRecord::Base
     miq_groups.sort!  { |a,b| a.sequence <=> b.sequence }
     groups.each       { |g| $log.debug("#{log_prefix} Group from LDAP: #{g.downcase}") }
     miq_groups.each   { |g| $log.debug("#{log_prefix} Group from EVM: #{g.description.downcase}") }
+    miq_groups.select { |g| groups.include?(g.description.downcase) }
+  end
+
+  def self.match_ipa_groups(ldap, obj)
+    log_prefix  = "MIQ(User#match_ipa_groups)"
+    groups      = self.getUserMembership(ldap, obj).collect {|g| g.downcase }
+    miq_groups  = MiqServer.my_server.miq_groups
+    miq_groups  = MiqServer.my_server.zone.miq_groups if miq_groups.empty?
+    miq_groups  = MiqGroup.find(:all, :conditions => {:resource_id => nil, :resource_type => nil}) if miq_groups.empty?
+    miq_groups.sort!  { |a,b| a.sequence <=> b.sequence }
+    groups.each       { |g| $log.info("#{log_prefix} Group from LDAP: #{g.downcase}") }
+    miq_groups.each   { |g| $log.info("#{log_prefix} Group from EVM: #{g.description.downcase}") }
     miq_groups.select { |g| groups.include?(g.description.downcase) }
   end
 
