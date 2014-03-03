@@ -49,6 +49,13 @@ Vmdb::Application.routes.draw do
 namespace :api do
   resources :vm,      :defaults => { :format => 'xml'}
   resources :host,    :defaults => { :format => 'xml'}
+  match "login", :to => "sessions#create", :defaults => { :format => 'xml'}
+  match "logout", :to => "sessions#logout", :defaults => { :format => 'xml'}
+  match 'vm/:id/poweron', :to => 'vm#poweron'
+  match 'vm/:id/poweroff', :to => 'vm#poweroff'
+  match 'vm/:id/shutdown', :to => 'vm#shutdown'
+  match "createvms", :to => "vm#createvms", :defaults => { :format => 'xml'}
+  match "usedips", :to => "vm#usedips", :defaults => { :format => 'xml'}
 end
 
   # You can have the root of your site routed with "root"

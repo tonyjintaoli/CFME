@@ -5,11 +5,7 @@ class Api::SessionsController < ApplicationController
   end
 
   def create
-    #curl -d "<userintenant><userName>user01</userName><password>rootroot</password></userintenant>"
-    #
-    #
-    #
-    log_prefix = "AAAAAAAAAAAAAAAAAAAAAAA API(login)"
+    log_prefix = "API(login)"
     # $log.info("#{log_prefix} User: #{params}")
     if params[:format] == "xml"
        xml = REXML::Document.new(request.raw_post)
@@ -25,15 +21,7 @@ class Api::SessionsController < ApplicationController
 
     unless @wait_for_task
       if url  # User is logged in
-          #$log.info("#{log_prefix} PPPPPPPPP: #{response.headers}")
-          #$log.info("#{log_prefix} PPPPPPPPP: #{request.session_options}")
-          #$log.info("#{log_prefix} PPPPPPPPP: #{request.headers}")
-          #$log.info("#{log_prefix} PPPPPPPPP: #{request.headers["HTTP_COOKIE"IE]}")
-
-          #s = session[:userid]
-          #user = User.find_by_userid(s)
           $log.info("#{log_prefix} User: #{session[:userid]}")
-
       else    # No URL, show error msg
           session.clear
       end
@@ -48,7 +36,6 @@ class Api::SessionsController < ApplicationController
   def logout
       log_prefix = "API(logout)"
       $log.info("#{log_prefix} User: #{session}")
-      #$log.info("#{log_prefix} Request.Headers: #{request.headers}")
       s = session[:userid]
       user = User.find_by_userid(s)
       user.logoff if user
